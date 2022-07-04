@@ -20,10 +20,10 @@ class Decoder(nn.Module):
     def __init__(self):
         super().__init__()
         self.compress = ResBlock(1024, 512)
-        self.up_16_8 = UpsampleBlock(512, 512, 256) # 1/16 -> 1/8
-        self.up_8_4 = UpsampleBlock(256, 256, 256) # 1/8 -> 1/4
+        self.up_16_8 = UpsampleBlock(512, 512, 256)  # 1/16 -> 1/8
+        self.up_8_4 = UpsampleBlock(256, 256, 256)  # 1/8 -> 1/4
 
-        self.pred = nn.Conv2d(256, 1, kernel_size=(3,3), padding=(1,1), stride=1)
+        self.pred = nn.Conv2d(256, 1, kernel_size=(3, 3), padding=(1, 1), stride=1)
 
     def forward(self, f16, f8, f4):
         x = self.compress(f16)
@@ -31,15 +31,35 @@ class Decoder(nn.Module):
         x = self.up_8_4(f4, x)
 
         x = self.pred(F.relu(x))
-        
-        x = F.interpolate(x, scale_factor=4, mode='bilinear', align_corners=False)
+
+        x = F.interpolate(x, scale_factor=4, mode="bilinear", align_corners=False)
+        return x
+
+
+class Decoder_ae(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.compress = ResBlock(1024, 512)
+        self.up_16_8 = UpsampleBlock(512, 512, 256)  # 1/16 -> 1/8
+        self.up_8_4 = UpsampleBlock(256, 256, 256)  # 1/8 -> 1/4
+
+        self.pred = nn.Conv2d(256, 3, kernel_size=(3, 3), padding=(1, 1), stride=1)
+
+    def forward(self, f16, f8, f4):
+        x = self.compress(f16)
+        x = self.up_16_8(f8, x)
+        x = self.up_8_4(f4, x)
+
+        x = self.pred(F.relu(x))
+
+        x = F.interpolate(x, scale_factor=4, mode="bilinear", align_corners=False)
         return x
 
 
 class MemoryReader(nn.Module):
     def __init__(self):
         super().__init__()
- 
+
     def get_affinity(self, mk, qk):
         B, CK, T, H, W = mk.shape
         mk = mk.flatten(start_dim=2)
@@ -49,21 +69,21 @@ class MemoryReader(nn.Module):
         a_sq = mk.pow(2).sum(1).unsqueeze(2)
         ab = mk.transpose(1, 2) @ qk
 
-        affinity = (2*ab-a_sq) / math.sqrt(CK)   # B, THW, HW
-        
+        affinity = (2 * ab - a_sq) / math.sqrt(CK)  # B, THW, HW
+
         # softmax operation; aligned the evaluation style
         maxes = torch.max(affinity, dim=1, keepdim=True)[0]
         x_exp = torch.exp(affinity - maxes)
         x_exp_sum = torch.sum(x_exp, dim=1, keepdim=True)
-        affinity = x_exp / x_exp_sum 
+        affinity = x_exp / x_exp_sum
 
         return affinity
 
     def readout(self, affinity, mv, qv):
         B, CV, T, H, W = mv.shape
 
-        mo = mv.view(B, CV, T*H*W) 
-        mem = torch.bmm(mo, affinity) # Weighted-sum B, CV, HW
+        mo = mv.view(B, CV, T * H * W)
+        mem = torch.bmm(mo, affinity)  # Weighted-sum B, CV, HW
         mem = mem.view(B, CV, H, W)
 
         mem_out = torch.cat([mem, qv], dim=1)
@@ -78,11 +98,11 @@ class STCN(nn.Module):
 
         self.key_encoder = KeyEncoder()
         if single_object:
-            self.value_encoder = ValueEncoderSO() 
+            self.value_encoder = ValueEncoderSO()
         else:
-            self.value_encoder = ValueEncoder() 
+            self.value_encoder = ValueEncoder()
 
-        # Projection from f16 feature space to key space
+            # Projection from f16 feature space to key space
         self.key_proj = KeyProjection(1024, keydim=64)
 
         # Compress f16 a bit to use in decoding later on
@@ -90,16 +110,16 @@ class STCN(nn.Module):
 
         self.memory = MemoryReader()
         self.decoder = Decoder()
+        self.decoderae = Decoder_ae()
 
     def aggregate(self, prob):
-        new_prob = torch.cat([
-            torch.prod(1-prob, dim=1, keepdim=True),
-            prob
-        ], 1).clamp(1e-7, 1-1e-7)
-        logits = torch.log((new_prob /(1-new_prob)))
+        new_prob = torch.cat(
+            [torch.prod(1 - prob, dim=1, keepdim=True), prob], 1
+        ).clamp(1e-7, 1 - 1e-7)
+        logits = torch.log((new_prob / (1 - new_prob)))
         return logits
 
-    def encode_key(self, frame): 
+    def encode_key(self, frame):
         # input: b*t*c*h*w
         b, t = frame.shape[:2]
 
@@ -118,27 +138,34 @@ class STCN(nn.Module):
 
         return k16, f16_thin, f16, f8, f4
 
-    def encode_value(self, frame, kf16, mask, other_mask=None): 
+    def encode_value(self, frame, kf16, mask, other_mask=None):
         # Extract memory key/value for a frame
         if self.single_object:
             f16 = self.value_encoder(frame, kf16, mask)
         else:
             f16 = self.value_encoder(frame, kf16, mask, other_mask)
-        return f16.unsqueeze(2) # B*512*T*H*W
+        return f16.unsqueeze(2)  # B*512*T*H*W
 
-    def segment(self, qk16, qv16, qf8, qf4, mk16, mv16, selector=None): 
+    def segment(self, qk16, qv16, qf8, qf4, mk16, mv16, selector=None):
         # q - query, m - memory
         # qv16 is f16_thin above
         affinity = self.memory.get_affinity(mk16, qk16)
-        
+
         if self.single_object:
             logits = self.decoder(self.memory.readout(affinity, mv16, qv16), qf8, qf4)
             prob = torch.sigmoid(logits)
         else:
-            logits = torch.cat([
-                self.decoder(self.memory.readout(affinity, mv16[:,0], qv16), qf8, qf4),
-                self.decoder(self.memory.readout(affinity, mv16[:,1], qv16), qf8, qf4),
-            ], 1)
+            logits = torch.cat(
+                [
+                    self.decoder(
+                        self.memory.readout(affinity, mv16[:, 0], qv16), qf8, qf4
+                    ),
+                    self.decoder(
+                        self.memory.readout(affinity, mv16[:, 1], qv16), qf8, qf4
+                    ),
+                ],
+                1,
+            )
 
             prob = torch.sigmoid(logits)
             prob = prob * selector.unsqueeze(2).unsqueeze(2)
@@ -148,14 +175,31 @@ class STCN(nn.Module):
 
         return logits, prob
 
+    def predict_next_frame(self, qk16, qv16, qf8, qf4, mk16, mv16):
+        # q - query, m - memory
+        # qv16 is f16_thin above
+        affinity = self.memory.get_affinity(mk16, qk16)
+
+        if self.single_object:
+            frame = self.decoderae(self.memory.readout(affinity, mv16, qv16), qf8, qf4)
+        else:
+            frame1 = self.decoderae(
+                self.memory.readout(affinity, mv16[:, 0], qv16), qf8, qf4
+            )
+            frame2 = self.decoderae(
+                self.memory.readout(affinity, mv16[:, 1], qv16), qf8, qf4
+            )
+            frame = (frame1 + frame2) / 2
+        return frame
+
     def forward(self, mode, *args, **kwargs):
-        if mode == 'encode_key':
+        if mode == "encode_key":
             return self.encode_key(*args, **kwargs)
-        elif mode == 'encode_value':
+        elif mode == "encode_value":
             return self.encode_value(*args, **kwargs)
-        elif mode == 'segment':
+        elif mode == "segment":
             return self.segment(*args, **kwargs)
+        elif mode == "predict_next_frame":
+            return self.predict_next_frame(*args, **kwargs)
         else:
             raise NotImplementedError
-
-

@@ -9,7 +9,7 @@ def softmax_w_top(x, top):
     x_exp /= torch.sum(x_exp, dim=1, keepdim=True)
     # The types should be the same already
     # some people report an error here so an additional guard is added
-    x.zero_().scatter_(1, indices, x_exp.type(x.dtype)) # B * THW * HW
+    x.zero_().scatter_(1, indices, x_exp.type(x.dtype))  # B * THW * HW
 
     return x
 
@@ -31,12 +31,15 @@ class MemoryBank:
         B, CK, NE = mk.shape
 
         # See supplementary material
+        # todo this can be learned. During training the number of frames was 3.
         a_sq = mk.pow(2).sum(1).unsqueeze(2)
         ab = mk.transpose(1, 2) @ qk
 
-        affinity = (2*ab-a_sq) / math.sqrt(CK)   # B, NE, HW
+        affinity = (2 * ab - a_sq) / math.sqrt(CK)  # B, NE, HW
         affinity = softmax_w_top(affinity, top=self.top_k)  # B, NE, HW
-
+        # firstfeature = affinity[0, :, 0].cpu().numpy()
+        # inds = firstfeature > 0
+        # firstfeature[inds]
         return affinity
 
     def _readout(self, affinity, mv):
@@ -47,7 +50,7 @@ class MemoryBank:
         _, _, h, w = qk.shape
 
         qk = qk.flatten(start_dim=2)
-        
+
         if self.temp_k is not None:
             mk = torch.cat([self.mem_k, self.temp_k], 2)
             mv = torch.cat([self.mem_v, self.temp_v], 2)
@@ -58,7 +61,7 @@ class MemoryBank:
         affinity = self._global_matching(mk, qk)
 
         # One affinity for all
-        readout_mem = self._readout(affinity.expand(k,-1,-1), mv)
+        readout_mem = self._readout(affinity.expand(k, -1, -1), mv)
 
         return readout_mem.view(k, self.CV, h, w)
 

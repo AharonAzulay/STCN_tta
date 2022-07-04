@@ -19,8 +19,7 @@ class STCN(nn.Module):
     def __init__(self):
         super().__init__()
         self.key_encoder = KeyEncoder() 
-        self.value_encoder = ValueEncoder() 
-
+        self.value_encoder = ValueEncoder()
         # Projection from f16 feature space to key space
         self.key_proj = KeyProjection(1024, keydim=64)
 

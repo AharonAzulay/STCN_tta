@@ -23,22 +23,22 @@ DAVIS: https://davischallenge.org/
 BL30K: https://github.com/hkchengrex/MiVOS
 """
 
-print(LICENSE)
-print('Datasets will be downloaded and extracted to ../YouTube, ../YouTube2018, ../static, ../DAVIS')
-reply = input('[y] to confirm, others to exit: ')
-if reply != 'y':
-    exit()
+# print(LICENSE)
+# print('Datasets will be downloaded and extracted to ../YouTube, ../YouTube2018, ../static, ../DAVIS')
+# reply = input('[y] to confirm, others to exit: ')
+# if reply != 'y':
+#     exit()
 
 
-# Static data
-os.makedirs('../static', exist_ok=True)
-print('Downloading static datasets...')
-gdown.download('https://drive.google.com/uc?id=1wUJq3HcLdN-z1t4CsUhjeZ9BVDb9YKLd', output='../static/static_data.zip', quiet=False)
-print('Extracting static datasets...')
-with zipfile.ZipFile('../static/static_data.zip', 'r') as zip_file:
-    zip_file.extractall('../static/')
-print('Cleaning up static datasets...')
-os.remove('../static/static_data.zip')
+# # Static data
+# os.makedirs('../static', exist_ok=True)
+# print('Downloading static datasets...')
+# gdown.download('https://drive.google.com/uc?id=1wUJq3HcLdN-z1t4CsUhjeZ9BVDb9YKLd', output='../static/static_data.zip', quiet=False)
+# print('Extracting static datasets...')
+# with zipfile.ZipFile('../static/static_data.zip', 'r') as zip_file:
+#     zip_file.extractall('../static/')
+# print('Cleaning up static datasets...')
+# os.remove('../static/static_data.zip')
 
 
 # DAVIS
@@ -79,50 +79,50 @@ os.remove('../DAVIS/2017/DAVIS-2017-scribbles-trainval.zip')
 os.remove('../DAVIS/DAVIS-data.zip')
 
 
-# YouTubeVOS
-os.makedirs('../YouTube', exist_ok=True)
-os.makedirs('../YouTube/all_frames', exist_ok=True)
-
-print('Downloading YouTubeVOS train...')
-gdown.download('https://drive.google.com/uc?id=13Eqw0gVK-AO5B-cqvJ203mZ2vzWck9s4', output='../YouTube/train.zip', quiet=False)
-print('Downloading YouTubeVOS val...')
-gdown.download('https://drive.google.com/uc?id=1o586Wjya-f2ohxYf9C1RlRH-gkrzGS8t', output='../YouTube/valid.zip', quiet=False)
-print('Downloading YouTubeVOS all frames valid...')
-gdown.download('https://drive.google.com/uc?id=1rWQzZcMskgpEQOZdJPJ7eTmLCBEIIpEN', output='../YouTube/all_frames/valid.zip', quiet=False)
-
-print('Extracting YouTube datasets...')
-with zipfile.ZipFile('../YouTube/train.zip', 'r') as zip_file:
-    zip_file.extractall('../YouTube/')
-with zipfile.ZipFile('../YouTube/valid.zip', 'r') as zip_file:
-    zip_file.extractall('../YouTube/')
-with zipfile.ZipFile('../YouTube/all_frames/valid.zip', 'r') as zip_file:
-    zip_file.extractall('../YouTube/all_frames')
-
-print('Cleaning up YouTubeVOS datasets...')
-os.remove('../YouTube/train.zip')
-os.remove('../YouTube/valid.zip')
-os.remove('../YouTube/all_frames/valid.zip')
-
-print('Resizing YouTubeVOS to 480p...')
-resize_youtube.resize_all('../YouTube/train', '../YouTube/train_480p')
-
-# YouTubeVOS 2018
-os.makedirs('../YouTube2018', exist_ok=True)
-os.makedirs('../YouTube2018/all_frames', exist_ok=True)
-
-print('Downloading YouTubeVOS2018 val...')
-gdown.download('https://drive.google.com/uc?id=1-QrceIl5sUNTKz7Iq0UsWC6NLZq7girr', output='../YouTube2018/valid.zip', quiet=False)
-print('Downloading YouTubeVOS2018 all frames valid...')
-gdown.download('https://drive.google.com/uc?id=1yVoHM6zgdcL348cFpolFcEl4IC1gorbV', output='../YouTube2018/all_frames/valid.zip', quiet=False)
-
-print('Extracting YouTube2018 datasets...')
-with zipfile.ZipFile('../YouTube2018/valid.zip', 'r') as zip_file:
-    zip_file.extractall('../YouTube2018/')
-with zipfile.ZipFile('../YouTube2018/all_frames/valid.zip', 'r') as zip_file:
-    zip_file.extractall('../YouTube2018/all_frames')
-
-print('Cleaning up YouTubeVOS2018 datasets...')
-os.remove('../YouTube2018/valid.zip')
-os.remove('../YouTube2018/all_frames/valid.zip')
-
-print('Done.')
+# # YouTubeVOS
+# os.makedirs('../YouTube', exist_ok=True)
+# os.makedirs('../YouTube/all_frames', exist_ok=True)
+#
+# print('Downloading YouTubeVOS train...')
+# gdown.download('https://drive.google.com/uc?id=13Eqw0gVK-AO5B-cqvJ203mZ2vzWck9s4', output='../YouTube/train.zip', quiet=False)
+# print('Downloading YouTubeVOS val...')
+# gdown.download('https://drive.google.com/uc?id=1o586Wjya-f2ohxYf9C1RlRH-gkrzGS8t', output='../YouTube/valid.zip', quiet=False)
+# print('Downloading YouTubeVOS all frames valid...')
+# gdown.download('https://drive.google.com/uc?id=1rWQzZcMskgpEQOZdJPJ7eTmLCBEIIpEN', output='../YouTube/all_frames/valid.zip', quiet=False)
+#
+# print('Extracting YouTube datasets...')
+# with zipfile.ZipFile('../YouTube/train.zip', 'r') as zip_file:
+#     zip_file.extractall('../YouTube/')
+# with zipfile.ZipFile('../YouTube/valid.zip', 'r') as zip_file:
+#     zip_file.extractall('../YouTube/')
+# with zipfile.ZipFile('../YouTube/all_frames/valid.zip', 'r') as zip_file:
+#     zip_file.extractall('../YouTube/all_frames')
+#
+# print('Cleaning up YouTubeVOS datasets...')
+# os.remove('../YouTube/train.zip')
+# os.remove('../YouTube/valid.zip')
+# os.remove('../YouTube/all_frames/valid.zip')
+#
+# print('Resizing YouTubeVOS to 480p...')
+# resize_youtube.resize_all('../YouTube/train', '../YouTube/train_480p')
+#
+# # YouTubeVOS 2018
+# os.makedirs('../YouTube2018', exist_ok=True)
+# os.makedirs('../YouTube2018/all_frames', exist_ok=True)
+#
+# print('Downloading YouTubeVOS2018 val...')
+# gdown.download('https://drive.google.com/uc?id=1-QrceIl5sUNTKz7Iq0UsWC6NLZq7girr', output='../YouTube2018/valid.zip', quiet=False)
+# print('Downloading YouTubeVOS2018 all frames valid...')
+# gdown.download('https://drive.google.com/uc?id=1yVoHM6zgdcL348cFpolFcEl4IC1gorbV', output='../YouTube2018/all_frames/valid.zip', quiet=False)
+#
+# print('Extracting YouTube2018 datasets...')
+# with zipfile.ZipFile('../YouTube2018/valid.zip', 'r') as zip_file:
+#     zip_file.extractall('../YouTube2018/')
+# with zipfile.ZipFile('../YouTube2018/all_frames/valid.zip', 'r') as zip_file:
+#     zip_file.extractall('../YouTube2018/all_frames')
+#
+# print('Cleaning up YouTubeVOS2018 datasets...')
+# os.remove('../YouTube2018/valid.zip')
+# os.remove('../YouTube2018/all_frames/valid.zip')
+#
+# print('Done.')

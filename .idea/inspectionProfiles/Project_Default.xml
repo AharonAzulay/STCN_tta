@@ -1,0 +1,79 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="66">
+            <item index="0" class="java.lang.String" itemvalue="kornia" />
+            <item index="1" class="java.lang.String" itemvalue="aim" />
+            <item index="2" class="java.lang.String" itemvalue="fire" />
+            <item index="3" class="java.lang.String" itemvalue="contrastive_learner" />
+            <item index="4" class="java.lang.String" itemvalue="vector-quantize-pytorch" />
+            <item index="5" class="java.lang.String" itemvalue="einops" />
+            <item index="6" class="java.lang.String" itemvalue="retry" />
+            <item index="7" class="java.lang.String" itemvalue="scikit-image" />
+            <item index="8" class="java.lang.String" itemvalue="yacs" />
+            <item index="9" class="java.lang.String" itemvalue="pypng" />
+            <item index="10" class="java.lang.String" itemvalue="tornado" />
+            <item index="11" class="java.lang.String" itemvalue="imageio-ffmpeg" />
+            <item index="12" class="java.lang.String" itemvalue="imgaug" />
+            <item index="13" class="java.lang.String" itemvalue="antialiased_cnns" />
+            <item index="14" class="java.lang.String" itemvalue="torch-optimizer" />
+            <item index="15" class="java.lang.String" itemvalue="tqdm" />
+            <item index="16" class="java.lang.String" itemvalue="pytorch-lightning" />
+            <item index="17" class="java.lang.String" itemvalue="seaborn" />
+            <item index="18" class="java.lang.String" itemvalue="tensorboard" />
+            <item index="19" class="java.lang.String" itemvalue="fvcore" />
+            <item index="20" class="java.lang.String" itemvalue="opencv-contrib-python-headless" />
+            <item index="21" class="java.lang.String" itemvalue="Deprecated" />
+            <item index="22" class="java.lang.String" itemvalue="moviepy" />
+            <item index="23" class="java.lang.String" itemvalue="tensorboardX" />
+            <item index="24" class="java.lang.String" itemvalue="segmentation_models_pytorch" />
+            <item index="25" class="java.lang.String" itemvalue="torchsummary" />
+            <item index="26" class="java.lang.String" itemvalue="coverage" />
+            <item index="27" class="java.lang.String" itemvalue="pydantic" />
+            <item index="28" class="java.lang.String" itemvalue="pytest" />
+            <item index="29" class="java.lang.String" itemvalue="device-runner" />
+            <item index="30" class="java.lang.String" itemvalue="pre-commit" />
+            <item index="31" class="java.lang.String" itemvalue="PyGithub" />
+            <item index="32" class="java.lang.String" itemvalue="allegroai" />
+            <item index="33" class="java.lang.String" itemvalue="torchmetrics" />
+            <item index="34" class="java.lang.String" itemvalue="opencv-python" />
+            <item index="35" class="java.lang.String" itemvalue="black" />
+            <item index="36" class="java.lang.String" itemvalue="albumentations" />
+            <item index="37" class="java.lang.String" itemvalue="bump2version" />
+            <item index="38" class="java.lang.String" itemvalue="hydra-core" />
+            <item index="39" class="java.lang.String" itemvalue="pytest-cov" />
+            <item index="40" class="java.lang.String" itemvalue="wandb" />
+            <item index="41" class="java.lang.String" itemvalue="pyjwt" />
+            <item index="42" class="java.lang.String" itemvalue="pydensecrf" />
+            <item index="43" class="java.lang.String" itemvalue="pytorch-toolbox" />
+            <item index="44" class="java.lang.String" itemvalue="Pillow" />
+            <item index="45" class="java.lang.String" itemvalue="pycocotools" />
+            <item index="46" class="java.lang.String" itemvalue="apex" />
+            <item index="47" class="java.lang.String" itemvalue="pandas" />
+            <item index="48" class="java.lang.String" itemvalue="jupytext" />
+            <item index="49" class="java.lang.String" itemvalue="segmentation-refinement" />
+            <item index="50" class="java.lang.String" itemvalue="torch" />
+            <item index="51" class="java.lang.String" itemvalue="numpy" />
+            <item index="52" class="java.lang.String" itemvalue="torchvision" />
+            <item index="53" class="java.lang.String" itemvalue="ttach" />
+            <item index="54" class="java.lang.String" itemvalue="The-Brain" />
+            <item index="55" class="java.lang.String" itemvalue="clearml" />
+            <item index="56" class="java.lang.String" itemvalue="opencv-python-headless" />
+            <item index="57" class="java.lang.String" itemvalue="imageio" />
+            <item index="58" class="java.lang.String" itemvalue="matplotlib" />
+            <item index="59" class="java.lang.String" itemvalue="detectron2" />
+            <item index="60" class="java.lang.String" itemvalue="timm" />
+            <item index="61" class="java.lang.String" itemvalue="gdown" />
+            <item index="62" class="java.lang.String" itemvalue="av" />
+            <item index="63" class="java.lang.String" itemvalue="x_transformers" />
+            <item index="64" class="java.lang.String" itemvalue="once-for-all" />
+            <item index="65" class="java.lang.String" itemvalue="py-thin-plate-spline" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
